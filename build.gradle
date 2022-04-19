@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'org.bytedeco.gradle-javacpp-build' version '1.5.7'
+}
+
+group 'org.svf'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.bytedeco:javacpp:1.5.7'
+}
+
+javacppBuildParser {
+    outputDirectory = file("$projectDir/src/gen/java/")
+}
