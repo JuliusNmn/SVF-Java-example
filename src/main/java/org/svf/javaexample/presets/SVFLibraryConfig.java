@@ -10,7 +10,7 @@ import org.bytedeco.javacpp.tools.InfoMapper;
         value = @Platform(
                 includepath = {
                         "~/node_modules/llvm-13.0.0.obj/include",
-                        "~/node_modules/svf-lib/svf-osx/include"
+                        "~/node_modules/SVF/include"
                 },
                 linkpath = {"~/node_modules/SVF/Release-build/lib/"},
                 include = {
