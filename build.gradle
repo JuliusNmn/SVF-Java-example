@@ -11,9 +11,52 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.bytedeco:javacpp:1.5.7'
+    api "org.bytedeco:javacpp:$javacppVersion"
+    javacppPlatform "org.bytedeco:javacpp-platform:$javacppVersion"
+    testRuntimeOnly "org.bytedeco:javacpp:$javacppVersion:$javacppPlatform"
+}
+
+task setNodeModulesDir {
+    exec {
+        executable = 'npm'
+        args = ['root', '-g']
+        standardOutput = new ByteArrayOutputStream()
+
+        ext.output = {
+            return standardOutput.toString().trim()
+        }
+    }
+}
+
+tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
+    dependsOn setNodeModulesDir
+    var nodeModulesDir = setNodeModulesDir.output()
+
+    includePath = [
+            "$nodeModulesDir/llvm-13.0.0.obj/include",
+            "$nodeModulesDir/SVF/include",
+            "$nodeModulesDir/z3.obj/include"
+    ]
+
+    linkPath = [
+        "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib",
+        "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib/cudd",
+        "$nodeModulesDir/llvm-13.0.0.obj/lib",
+        "$nodeModulesDir/z3.obj/bin"
+    ]
+
+    copyLibs = true
+
+    compilerOptions = ['-std=c++14', '-lcurses']
+}
+
+javacppBuildCommand {
 }
 
 javacppBuildParser {
-    outputDirectory = file("$projectDir/src/gen/java/")
+    classOrPackageNames = ['org.svf.lib.*']
+    outputDirectory = file("$buildDir/generated/sources/javacpp/")
+}
+
+javacppBuildCompiler {
 }
