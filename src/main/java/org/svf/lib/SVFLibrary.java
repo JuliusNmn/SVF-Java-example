@@ -7,7 +7,11 @@ import org.bytedeco.javacpp.annotation.*;
 
 @Platform(
         include = {
-                "SVF-FE/LLVMModule.h"
+                "SVF-FE/LLVMUtil.h",
+                "Graphs/SVFG.h",
+                "WPA/Andersen.h",
+                "SVF-FE/SVFIRBuilder.h",
+                "Util/Options.h"
         },
         link = {
                 "svf#",
@@ -50,6 +54,7 @@ public class SVFLibrary {
         public static native LLVMModuleSet getLLVMModuleSet();
         public static native void releaseLLVMModuleSet();
         public native SVFModule buildSVFModule(@Const @ByRef StringVector moduleNameVec);
+        public native void dumpModulesToFile(@Const @StdString String suffix);
     }
 
     @Namespace("SVF")
@@ -58,6 +63,112 @@ public class SVFLibrary {
         public SVFModule(Pointer p) { super(p); }
 
         public native @StdString BytePointer getModuleIdentifier();
+        public native void buildSymbolTableInfo();
+    }
+
+    @Namespace("SVF")
+    public static class SVFIRBuilder extends Pointer {
+        static { Loader.load(); }
+        private SVFIRBuilder(Pointer p) { super(p); }
+        public SVFIRBuilder() { super((Pointer)null); allocate(); }
+        public native SVFIR build(SVFModule module);
+        private native void allocate();
+    }
+
+    @Namespace("SVF")
+    public static class PointerAnalysis extends Pointer {
+        static { Loader.load(); }
+        public PointerAnalysis(Pointer p) { super(p); }
+        public native ICFG getICFG();
+        public native PTACallGraph getPTACallGraph();
+        @Const public native SVFIR getPAG();
+//        @Const public native PointsTo getPts(@Cast("NodeID") int ptr);
+    }
+
+    @Namespace("llvm")
+    public static class Value extends Pointer {
+        public Value(Pointer p) { super(p); }
+    }
+
+    @Namespace("SVF")
+    public static class IRGraph extends PointerAnalysis {
+        static { Loader.load(); }
+        public IRGraph(Pointer p) { super(p); }
+        @Cast("SVF::NodeID") public native int getValueNode(@Const Value V);
+    }
+
+    @Namespace("SVF")
+    public static class SVFIR extends IRGraph {
+        static { Loader.load(); }
+        public SVFIR(Pointer p) { super(p); }
+        public static native void releaseSVFIR();
+    }
+
+    @Namespace("SVF")
+    public static class AndersenWaveDiff extends Pointer {
+        static { Loader.load(); }
+        public AndersenWaveDiff(Pointer p) { super(p); }
+        public static native Andersen createAndersenWaveDiff(SVFIR svfir);
+        public static native void releaseAndersenWaveDiff();
+    }
+
+    @Namespace("SVF")
+    public static class Andersen extends PointerAnalysis {
+        static { Loader.load(); }
+        public Andersen(Pointer p) { super(p); }
+    }
+
+    @Namespace("SVF")
+    public static class PTACallGraph extends Pointer {
+        static { Loader.load(); }
+        public PTACallGraph(Pointer p) { super(p); }
+    }
+
+    @Namespace("SVF")
+    public static class ICFG extends Pointer {
+        static { Loader.load(); }
+        public ICFG(Pointer p) { super(p); }
+        public void dump(@Const @StdString String file) { dump(file, false);}
+        public native void dump(@Const @StdString String file, boolean simple);
+    }
+
+    @Namespace("SVF")
+    public static class VFG extends Pointer {
+        static { Loader.load(); }
+        public VFG(Pointer p) { super(p); }
+        public VFG(PTACallGraph callGraph) { super((Pointer)null); allocate(callGraph, VFGK.FULLSVFG); }
+        public VFG(PTACallGraph callGraph, VFGK vfgk) { super((Pointer)null); allocate(callGraph, vfgk); }
+        public enum VFGK {
+            FULLSVFG((byte)(0)),
+            PTRONLYSVFG((byte)(1)),
+            FULLSVFG_OPT((byte)(2)),
+            PTRONLYSVFG_OPT((byte)(3));
+
+            public final byte value;
+            private VFGK(byte v) { this.value = v; }
+            private VFGK(VFGK e) { this.value = e.value; }
+            public VFGK intern() { for (VFGK e : values()) if (e.value == value) return e; return this; }
+            @Override public String toString() { return intern().name(); }
+        }
+        public void dump(@Const @StdString String file) { dump(file, false); }
+        public native void dump(@Const @StdString String file, boolean simple);
+        private native void allocate(PTACallGraph callGraph, VFGK vfgk);
+    }
+
+    @Namespace("SVF")
+    public static class SVFGBuilder extends Pointer {
+        static { Loader.load(); }
+        public SVFGBuilder() { super((Pointer)null); allocate(false); }
+        public native SVFG buildFullSVFG(Andersen ander);
+        private native void allocate(boolean SVFGWithIndCall);
+    }
+
+    @Namespace("SVF")
+    public static class SVFG extends Pointer {
+        static { Loader.load(); }
+        public SVFG(Pointer p) { super(p); }
+        public void dump(@Const @StdString String file) { dump(file, false); }
+        public native void dump(@Const @StdString String file, boolean simple);
     }
 
     @Name("std::vector<std::string>")
@@ -148,4 +259,7 @@ public class SVFLibrary {
             return this;
         }
     }
+
+    @Namespace("llvm")
+    public static native void llvm_shutdown();
 }
