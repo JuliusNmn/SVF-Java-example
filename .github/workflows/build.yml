@@ -3,9 +3,13 @@ name: Build
 on: [push]
 
 jobs:
-  frontend_test:
-    name: Fronted Test
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+      fail-fast: false
+    name: Build
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -13,8 +17,12 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
-      - name: Install prerequisites
+      - name: Install prerequisites (Linux)
+        if: matrix.os == "ubuntu-latest"
         run: sudo apt install -y zlib1g-dev unzip cmake gcc g++
+      - name: Install prerequisites (Mac)
+        if: matrix.os == "macos-latest"
+        run: brew install unzip
       - name: Install SVF Tools
         run: npm install -g svf-tools
       - name: Compile example.c
