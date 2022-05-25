@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: 'npm'
       - name: Install prerequisites
         run: sudo apt install -y zlib1g-dev unzip cmake gcc g++
       - name: Install SVF Tools
