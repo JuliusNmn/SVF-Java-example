@@ -1,0 +1,22 @@
+name: Build
+
+on: [push]
+
+jobs:
+  frontend_test:
+    name: Fronted Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install prerequisites
+        run: sudo apt install -y zlib1g-dev unzip cmake gcc g++
+      - name: Install SVF Tools
+        run: npm install -g svf-tools
+      - name: Compile example.c
+        run: clang -S -c -g -fno-discard-value-names -emit-llvm example.c -o example.ll
+      - name: Run demo
+        run: ./gradlew runDemo --args="example.ll"
