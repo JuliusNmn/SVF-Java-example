@@ -13,7 +13,14 @@ repositories {
 dependencies {
     api "org.bytedeco:javacpp:$javacppVersion"
     javacppPlatform "org.bytedeco:javacpp-platform:$javacppVersion"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly "org.bytedeco:javacpp:$javacppVersion:$javacppPlatform"
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.32'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task setNodeModulesDir {
@@ -28,6 +35,13 @@ task setNodeModulesDir {
     }
 }
 
+task runDemo(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+    classpath = sourceSets.main.runtimeClasspath
+    main = "org.svf.example.console.Demo"
+}
+
 tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
     dependsOn setNodeModulesDir
     var nodeModulesDir = setNodeModulesDir.output()
@@ -37,16 +51,13 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
             "$nodeModulesDir/SVF/include",
             "$nodeModulesDir/z3.obj/include"
     ]
-
     linkPath = [
-        "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib",
-        "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib/cudd",
-        "$nodeModulesDir/llvm-13.0.0.obj/lib",
-        "$nodeModulesDir/z3.obj/bin"
+            "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib",
+            "$nodeModulesDir/svf-lib/SVF-osx/Release-build/lib/cudd",
+            "$nodeModulesDir/llvm-13.0.0.obj/lib",
+            "$nodeModulesDir/z3.obj/bin"
     ]
-
     copyLibs = true
-
     compilerOptions = ['-std=c++14', '-lcurses']
 }
 
@@ -59,4 +70,5 @@ javacppBuildParser {
 }
 
 javacppBuildCompiler {
+    classOrPackageNames = ['org.svf.lib.*']
 }

@@ -79,7 +79,7 @@ public class SVFLibrary {
     public static class PointerAnalysis extends Pointer {
         static { Loader.load(); }
         public PointerAnalysis(Pointer p) { super(p); }
-        public native ICFG getICFG();
+        @Const public native ICFG getICFG();
         public native PTACallGraph getPTACallGraph();
         @Const public native SVFIR getPAG();
 //        @Const public native PointsTo getPts(@Cast("NodeID") int ptr);

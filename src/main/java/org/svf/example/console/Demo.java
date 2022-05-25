@@ -6,8 +6,7 @@ import static org.svf.lib.SVFLibrary.llvm_shutdown;
 
 public class Demo {
     public static void main(String[] args) {
-        System.out.println("SVF Java Demo... ");
-        System.out.println();
+        System.out.println("SVF Java Demo...\n");
 
         // Get SVF Module and build symbols
         var llvm = LLVMModuleSet.getLLVMModuleSet();
