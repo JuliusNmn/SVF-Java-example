@@ -53,7 +53,7 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
     ]
     linkPath = [
             "$nodeModulesDir/SVF/Release-build/lib",
-            "$nodeModulesDir/SVF/Release-build/lib/cudd",
+            "$nodeModulesDir/SVF/Release-build/lib/CUDD",
             "$nodeModulesDir/llvm-13.0.0.obj/lib",
             "$nodeModulesDir/z3.obj/bin"
     ]
