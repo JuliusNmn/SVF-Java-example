@@ -47,15 +47,15 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
     var nodeModulesDir = setNodeModulesDir.output()
 
     includePath = [
-            "$nodeModulesDir/SVF/llvm-13.0.0.obj/include",
+            "$nodeModulesDir/llvm-13.0.0.obj/include",
             "$nodeModulesDir/SVF/include",
-            "$nodeModulesDir/SVF/z3.obj/include"
+            "$nodeModulesDir/z3.obj/include"
     ]
     linkPath = [
             "$nodeModulesDir/SVF/Release-build/lib",
             "$nodeModulesDir/SVF/Release-build/lib/cudd",
-            "$nodeModulesDir/SVF/llvm-13.0.0.obj/lib",
-            "$nodeModulesDir/SVF/z3.obj/bin"
+            "$nodeModulesDir/llvm-13.0.0.obj/lib",
+            "$nodeModulesDir/z3.obj/bin"
     ]
     copyLibs = true
     compilerOptions = ['-std=c++14', '-lcurses']

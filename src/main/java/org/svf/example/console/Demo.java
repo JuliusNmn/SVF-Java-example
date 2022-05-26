@@ -9,26 +9,26 @@ public class Demo {
         System.out.println("SVF Java Demo...\n");
 
         // Get SVF Module and build symbols
-        var llvm = LLVMModuleSet.getLLVMModuleSet();
-        var modules = new StringVector(args);
-        var svf = llvm.buildSVFModule(modules);
+        LLVMModuleSet llvm = LLVMModuleSet.getLLVMModuleSet();
+        StringVector modules = new StringVector(args);
+        SVFModule svf = llvm.buildSVFModule(modules);
         svf.buildSymbolTableInfo();
 
         // Build PAG, Andersen, and get call graph
-        var pag = new SVFIRBuilder().build(svf);
-        var ander = AndersenWaveDiff.createAndersenWaveDiff(pag);
-        var callgraph = ander.getPTACallGraph();
+        SVFIR pag = new SVFIRBuilder().build(svf);
+        Andersen ander = AndersenWaveDiff.createAndersenWaveDiff(pag);
+        PTACallGraph callgraph = ander.getPTACallGraph();
 
         // Build ICFG
-        var icfg = pag.getICFG();
+        ICFG icfg = pag.getICFG();
         icfg.dump("icfg");
 
         // Build VFG
-        var vfg = new VFG(callgraph);
+        VFG vfg = new VFG(callgraph);
         vfg.dump("vfg");
 
         // Build SVFG
-        var svfg = new SVFGBuilder().buildFullSVFG(ander);
+        SVFG svfg = new SVFGBuilder().buildFullSVFG(ander);
         svfg.dump("svfg");
 
         // Cleanup resources
