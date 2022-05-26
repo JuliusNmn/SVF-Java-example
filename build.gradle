@@ -39,7 +39,7 @@ task runDemo(type: JavaExec) {
     group = "Execution"
     description = "Run the main class with JavaExecTask"
     classpath = sourceSets.main.runtimeClasspath
-    main = "org.svf.example.console.Demo"
+    mainClass = "org.svf.example.console.Demo"
 }
 
 tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
