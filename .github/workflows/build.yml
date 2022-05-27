@@ -31,9 +31,9 @@ jobs:
       - name: Compile example.c
         run: clang -S -c -g -fno-discard-value-names -emit-llvm example.c -o example.ll
       - name: Run demo
-        run: ./gradlew runDemo --args="example.ll"
+        run: ./gradlew runDemo --args="example.ll" --info
       - name: Archive build
-        if: ${{ always() }}
+        # if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: Java SVF ${{ matrix.os }}
