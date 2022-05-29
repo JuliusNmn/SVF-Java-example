@@ -28,7 +28,7 @@ echo 'export PATH="/usr/local/opt/openjdk@17/bin:$PATH"' >> ~/.zshrc
 ### Steps
 1. Install SVF Tools using NPM
 ```sh
-npm install -g svf-tools
+npm install -g svf-lib
 ```
 2. Clone this repository
 ```sh
