@@ -7,15 +7,23 @@ Being written in C/C++, SVF is not easily accessible to developers who wish to u
 
 ## Quick Start
 
-### Prerequesites
+### Prerequisites
 #### Linux
 ```sh
-sudo apt-get install zlib1g-dev unzip cmake gcc g++ nodejs
+# Toolchain, Node/NPM, and utils
+sudo apt install zlib1g-dev unzip cmake gcc g++ nodejs npm wget curl libncurses5
+# JDK
+sudo apt install openjdk-17-jdk-headless
 ```
 #### Mac
-```
+```sh
+# Toolchain
 xcode-select --install
-brew install unzip nodejs
+# Node/NPM, utils
+brew install unzip nodejs npm wget curl
+# JDK
+brew install openjdk@17
+echo 'export PATH="/usr/local/opt/openjdk@17/bin:$PATH"' >> ~/.zshrc
 ```
 ### Steps
 1. Install SVF Tools using NPM
@@ -28,7 +36,7 @@ git clone https://github.com/SVF-Tools/SVF-Java-example
 ```
 3. Produce LLVM IR of `example.c`
 ```sh
-cd SVF-Java-Project
+cd SVF-Java-example
 clang -S -c -g -fno-discard-value-names -emit-llvm example.c -o example.ll
 ```
 4. Run the gradle project
