@@ -2,6 +2,8 @@ package org.svf.example.console;
 
 import org.svf.lib.SVFLibrary.*;
 
+import java.io.File;
+
 import static org.svf.lib.SVFLibrary.llvm_shutdown;
 
 public class Demo {
@@ -11,6 +13,9 @@ public class Demo {
      */
     public static void main(String[] args) {
         System.out.println("SVF Java Demo...\n");
+
+        // Create the graphs output directory
+        new File("graphs").mkdir();
 
         // Get SVF Module and build symbols
         LLVMModuleSet llvm = LLVMModuleSet.getLLVMModuleSet();

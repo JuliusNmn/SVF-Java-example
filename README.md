@@ -1,4 +1,4 @@
-# SVF-Java-example
+# SVF Java example
 Using SVF in Java Projects
 
 ## Project aims
