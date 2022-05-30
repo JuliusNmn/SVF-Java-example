@@ -42,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Graphs (${{ matrix.os }})
-          path: "*.dot"
+          path: graphs

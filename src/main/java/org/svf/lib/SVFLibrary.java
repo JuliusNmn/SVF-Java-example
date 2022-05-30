@@ -53,7 +53,10 @@ public class SVFLibrary {
         public LLVMModuleSet(Pointer p) { super(p); }
         public static native LLVMModuleSet getLLVMModuleSet();
         public static native void releaseLLVMModuleSet();
-        public native SVFModule buildSVFModule(@Const @ByRef StringVector moduleNameVec);
+        public SVFModule buildSVFModule(String[] moduleNames) {
+            return buildSVFModule(new StringVector(moduleNames));
+        }
+        private native SVFModule buildSVFModule(@Const @ByRef StringVector moduleNameVec);
         public native void dumpModulesToFile(@Const @StdString String suffix);
     }
 
@@ -82,7 +85,6 @@ public class SVFLibrary {
         @Const public native ICFG getICFG();
         public native PTACallGraph getPTACallGraph();
         @Const public native SVFIR getPAG();
-//        @Const public native PointsTo getPts(@Cast("NodeID") int ptr);
     }
 
     @Namespace("llvm")
@@ -172,7 +174,7 @@ public class SVFLibrary {
     }
 
     @Name("std::vector<std::string>")
-    public static class StringVector extends Pointer {
+    protected static class StringVector extends Pointer {
         static { Loader.load(); }
         /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
         public StringVector(Pointer p) { super(p); }

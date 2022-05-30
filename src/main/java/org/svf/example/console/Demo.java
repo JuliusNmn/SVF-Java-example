@@ -5,13 +5,16 @@ import org.svf.lib.SVFLibrary.*;
 import static org.svf.lib.SVFLibrary.llvm_shutdown;
 
 public class Demo {
+    /**
+     * Run the demo SVF Java example console application
+     * @param args module names (path to modules) to load for the example
+     */
     public static void main(String[] args) {
         System.out.println("SVF Java Demo...\n");
 
         // Get SVF Module and build symbols
         LLVMModuleSet llvm = LLVMModuleSet.getLLVMModuleSet();
-        StringVector modules = new StringVector(args);
-        SVFModule svf = llvm.buildSVFModule(modules);
+        SVFModule svf = llvm.buildSVFModule(args);
         svf.buildSymbolTableInfo();
 
         // Build PAG, Andersen, and get call graph
@@ -21,15 +24,15 @@ public class Demo {
 
         // Build ICFG
         ICFG icfg = pag.getICFG();
-        icfg.dump("icfg");
+        icfg.dump("graphs/icfg");
 
         // Build VFG
         VFG vfg = new VFG(callgraph);
-        vfg.dump("vfg");
+        vfg.dump("graphs/vfg");
 
         // Build SVFG
         SVFG svfg = new SVFGBuilder().buildFullSVFG(ander);
-        svfg.dump("svfg");
+        svfg.dump("graphs/svfg");
 
         // Cleanup resources
         AndersenWaveDiff.releaseAndersenWaveDiff();
