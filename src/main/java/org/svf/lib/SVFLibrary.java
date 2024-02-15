@@ -7,26 +7,24 @@ import org.bytedeco.javacpp.annotation.*;
 
 @Platform(
         include = {
-                "SVF-FE/LLVMUtil.h",
+                "SVF-LLVM/LLVMUtil.h",
                 "Graphs/SVFG.h",
                 "WPA/Andersen.h",
-                "SVF-FE/SVFIRBuilder.h",
+                "SVF-LLVM/SVFIRBuilder.h",
+                "Graphs/IRGraph.h",
+                "Graphs/CHG.h",
                 "Util/Options.h"
         },
         link = {
-                "Svf#",
-                "Cudd#",
-                "LLVMBitWriter#",
                 "LLVMCore#",
+                "LLVMBitWriter#",
                 "LLVMipo#",
                 "LLVMIRReader#",
                 "LLVMInstCombine#",
                 "LLVMInstrumentation#",
                 "LLVMTarget#",
                 "LLVMLinker#",
-                "LLVMAnalysis#",
                 "LLVMScalarOpts#",
-                "LLVMSupport#",
                 "z3",
                 "LLVMAsmParser#",
                 "LLVMAggressiveInstCombine#",
@@ -44,9 +42,25 @@ import org.bytedeco.javacpp.annotation.*;
                 "LLVMBinaryFormat#",
                 "LLVMDebugInfoCodeView#",
                 "LLVMDemangle#",
+                "LLVMAnalysis#",
+                "LLVMSupport#",
+                "LLVM-16",
+                "SvfLLVM#",
+                "SvfCore#",
         }
 )
-public class SVFLibrary {
+public class SVFLibrary {  
+    @Namespace("SVF")
+    public class ExtAPI extends Pointer {
+        static { Loader.load(); }
+        public static native boolean setExtBcPath(@Const @ByRef String path);
+    }
+    @Namespace("SVF")
+    public static class CHGraph extends Pointer {
+        static { Loader.load(); }
+        public CHGraph(SVFModule module) { super((Pointer)null); allocate(module);}
+        private native void allocate(SVFModule module);
+    }
     @Namespace("SVF")
     public static class LLVMModuleSet extends Pointer {
         static { Loader.load(); }
@@ -66,16 +80,16 @@ public class SVFLibrary {
         public SVFModule(Pointer p) { super(p); }
 
         public native @StdString BytePointer getModuleIdentifier();
-        public native void buildSymbolTableInfo();
+        //public native void buildSymbolTableInfo();
     }
 
     @Namespace("SVF")
     public static class SVFIRBuilder extends Pointer {
         static { Loader.load(); }
         private SVFIRBuilder(Pointer p) { super(p); }
-        public SVFIRBuilder() { super((Pointer)null); allocate(); }
-        public native SVFIR build(SVFModule module);
-        private native void allocate();
+        public SVFIRBuilder(SVFModule module) { super((Pointer)null); allocate(module); }
+        public native SVFIR build();
+        private native void allocate(SVFModule module);
     }
 
     @Namespace("SVF")
@@ -87,16 +101,16 @@ public class SVFLibrary {
         @Const public native SVFIR getPAG();
     }
 
-    @Namespace("llvm")
-    public static class Value extends Pointer {
-        public Value(Pointer p) { super(p); }
+    @Namespace("SVF")
+    public static class SVFValue extends Pointer {
+        public SVFValue(Pointer p) { super(p); }
     }
 
     @Namespace("SVF")
     public static class IRGraph extends PointerAnalysis {
         static { Loader.load(); }
         public IRGraph(Pointer p) { super(p); }
-        @Cast("SVF::NodeID") public native int getValueNode(@Const Value V);
+        @Cast("SVF::NodeID") public native int getValueNode(@Const SVFValue V);
     }
 
     @Namespace("SVF")

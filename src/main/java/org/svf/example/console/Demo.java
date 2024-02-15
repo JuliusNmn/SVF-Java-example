@@ -17,13 +17,15 @@ public class Demo {
         // Create the graphs output directory
         new File("graphs").mkdir();
 
+        ExtAPI.setExtBcPath("/usr/local/lib/node_modules/SVF/Release-build/lib/extapi.bc");
+
         // Get SVF Module and build symbols
         LLVMModuleSet llvm = LLVMModuleSet.getLLVMModuleSet();
         SVFModule svf = llvm.buildSVFModule(args);
-        svf.buildSymbolTableInfo();
+        //svf.buildSymbolTableInfo();
 
         // Build PAG, Andersen, and get call graph
-        SVFIR pag = new SVFIRBuilder().build(svf);
+        SVFIR pag = new SVFIRBuilder(svf).build();
         Andersen ander = AndersenWaveDiff.createAndersenWaveDiff(pag);
         PTACallGraph callgraph = ander.getPTACallGraph();
 

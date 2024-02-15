@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id 'org.bytedeco.gradle-javacpp-build' version '1.5.7'
+    id 'org.bytedeco.gradle-javacpp-build' version '1.5.10'
 }
 
 group 'org.svf'
@@ -39,6 +39,7 @@ task runDemo(type: JavaExec) {
     group = "Execution"
     description = "Run the main class with JavaExecTask"
     classpath = sourceSets.main.runtimeClasspath
+    // jvmArgs = ['-verbose:jni']
     mainClass = "org.svf.example.console.Demo"
 }
 
@@ -47,18 +48,18 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
     var nodeModulesDir = setNodeModulesDir.output()
 
     includePath = [
-            "$nodeModulesDir/llvm-13.0.0.obj/include",
-            "$nodeModulesDir/SVF/include",
+            "$nodeModulesDir/llvm-16.0.0.obj/include",
+            "$nodeModulesDir/SVF/Release-build/include",
             "$nodeModulesDir/z3.obj/include"
     ]
     linkPath = [
             "$nodeModulesDir/SVF/Release-build/lib",
             "$nodeModulesDir/SVF/Release-build/lib/CUDD",
-            "$nodeModulesDir/llvm-13.0.0.obj/lib",
+            "$nodeModulesDir/llvm-16.0.0.obj/lib",
             "$nodeModulesDir/z3.obj/bin"
     ]
     copyLibs = true
-    compilerOptions = ['-std=c++14', '-lcurses']
+    compilerOptions = ['-std=c++17', '-lcurses']
 }
 
 javacppBuildCommand {
